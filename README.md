@@ -35,7 +35,7 @@ This tool supports all GitHub image upload methods — including drag-and-drop, 
   - [Edge](https://tampermonkey.net/?ext=dhdg&browser=edge)
 
 2. Install the script:
-  - From [GreasyFork](replace with real link when available)
+  - From [GreasyFork](https://greasyfork.org/en/scripts/539143-github-image-resizer)
   - Or manually:
     1. Click the Tampermonkey icon → "Create a new script"
     2. Paste contents of github-pr-image-to-html.user.js
