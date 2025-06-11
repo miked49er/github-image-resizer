@@ -1,6 +1,6 @@
 // ==UserScript==
-// @name         GitHub PR Image to HTML (Custom Width)
-// @namespace    http://tampermonkey.net/
+// @name         Tampermonkey GitHub Image Resizer
+// @namespace    http://miked49er.github.io/
 // @version      1.2
 // @description  Convert GitHub markdown image uploads to HTML <img> tags with customizable width; supports drag-drop, paste, and attachment button uploads.
 // @author       Mike Deiters
@@ -8,6 +8,8 @@
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @grant        GM_registerMenuCommand
+// @updateURL   https://raw.githubusercontent.com/miked49er/tampermonkey-scripts/main/tampermonkey-github-image-resizer.user.js
+// @downloadURL https://raw.githubusercontent.com/miked49er/tampermonkey-scripts/main/tampermonkey-github-image-resizer.user.js
 // ==/UserScript==
 
 (function () {
