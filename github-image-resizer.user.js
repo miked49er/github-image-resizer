@@ -5,6 +5,7 @@
 // @description  Convert GitHub markdown image uploads to HTML <img> tags with customizable width; supports drag-drop, paste, and attachment button uploads.
 // @author       Mike Deiters
 // @match        https://github.com/*
+// @license      MIT
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @grant        GM_registerMenuCommand
