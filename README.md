@@ -1,4 +1,4 @@
-# 📐 Tampermonkey GitHub Image Resizer
+# 📐 GitHub Image Resizer
 
 A Tampermonkey userscript that **automatically converts uploaded image Markdown** in GitHub Pull Requests into an HTML `<img>` tag with a customizable width.
 
