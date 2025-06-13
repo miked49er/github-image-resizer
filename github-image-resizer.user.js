@@ -36,7 +36,7 @@
 
     GM_registerMenuCommand('Set Image Width', setWidth);
 
-    const imageMarkdownRegex = /!\[(.*?)\]\((https:\/\/(?:(private|)user-images\.githubusercontent\.com|github\.com\/user-attachments\/assets)\/[^\)]+)\)/g;
+    const imageMarkdownRegex = /!\[(.*?)\]\((https:\/\/(?:(private-|)user-images\.githubusercontent\.com|github\.com\/user-attachments\/assets)\/[^\)]+)\)/g;
 
     function replaceImagesInTextarea(textarea) {
         let content = textarea.value;
