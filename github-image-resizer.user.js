@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GitHub Image Resizer
 // @namespace    http://miked49er.github.io/
-// @version      1.3
+// @version      1.4
 // @description  Convert GitHub markdown image uploads to HTML <img> tags with customizable width; supports drag-drop, paste, and attachment button uploads.
 // @author       Mike Deiters
 // @match        https://github.com/*
@@ -36,7 +36,7 @@
 
     GM_registerMenuCommand('Set Image Width', setWidth);
 
-    const imageMarkdownRegex = /!\[(.*?)\]\((https:\/\/(?:user-images\.githubusercontent\.com|github\.com\/user-attachments\/assets)\/[^\)]+)\)/g;
+    const imageMarkdownRegex = /!\[(.*?)\]\((https:\/\/(?:(private|)user-images\.githubusercontent\.com|github\.com\/user-attachments\/assets)\/[^\)]+)\)/g;
 
     function replaceImagesInTextarea(textarea) {
         let content = textarea.value;
