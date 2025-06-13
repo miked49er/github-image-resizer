@@ -50,7 +50,7 @@
         });
 
         if (modified) {
-            textarea.value = content;Ï
+            textarea.value = content;
         }
     }
 
