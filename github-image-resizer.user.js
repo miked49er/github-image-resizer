@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GitHub Image Resizer
 // @namespace    http://miked49er.github.io/
-// @version      1.5
+// @version      1.6
 // @description  Convert GitHub markdown image uploads to HTML <img> tags with customizable width; supports drag-drop, paste, and attachment button uploads.
 // @author       Mike Deiters
 // @match        https://github.com/*
@@ -61,25 +61,24 @@
         // Check initial content
         replaceImagesInTextarea(textarea);
 
-        // MutationObserver for DOM changes (not .value though!)
-        const observer = new MutationObserver(() => {
-            replaceImagesInTextarea(textarea);
-        });
-
-        observer.observe(textarea, { characterData: true, childList: true, subtree: true });
-
-        // Input still useful for typing/paste
-        textarea.addEventListener('input', () => replaceImagesInTextarea(textarea));
-
-        // 🧠 Polling loop to detect programmatic .value changes (used by drag-drop)
-        let lastValue = textarea.value;
-        setInterval(() => {
-            if (textarea.value !== lastValue) {
-                lastValue = textarea.value;
+        // Input event for typing/paste
+        textarea.addEventListener('input', (e) => {
+            // Only process if the content contains an image markdown
+            if (imageMarkdownRegex.test(textarea.value)) {
                 replaceImagesInTextarea(textarea);
             }
-        }, 800);
-    }
+        });
+
+        // Reduce polling frequency and only check when necessary
+        let lastValue = textarea.value;
+        setInterval(() => {
+            const currentValue = textarea.value;
+            if (currentValue !== lastValue && imageMarkdownRegex.test(currentValue)) {
+                lastValue = currentValue;
+                replaceImagesInTextarea(textarea);
+            }
+        }, 1000); // Increased from 800ms to 1000ms for less interference
+}
 
 
     function observeDynamicTextareas() {
