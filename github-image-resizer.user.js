@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GitHub Image Resizer
 // @namespace    http://miked49er.github.io/
-// @version      1.6
+// @version      1.7
 // @description  Convert GitHub markdown image uploads to HTML <img> tags with customizable width; supports drag-drop, paste, and attachment button uploads.
 // @author       Mike Deiters
 // @match        https://github.com/*
@@ -38,6 +38,43 @@
 
     const imageMarkdownRegex = /!\[(.*?)\]\((https:\/\/(?:(private-|)user-images\.githubusercontent\.com|github\.com\/user-attachments\/assets)\/[^\)]+)\)/g;
 
+    function adjustExistingImgTags(textarea) {
+        let content = textarea.value;
+        let modified = false;
+        const width = getWidth();
+
+        // Match GitHub-hosted <img> tags (self-closing or not)
+        const htmlImgRegex = /<img\s+([^>]*?)>/gi;
+
+        content = content.replace(htmlImgRegex, (match, attrString) => {
+            // Only process GitHub-hosted images
+            const hasGitHubSrc = /src=["']https:\/\/(?:(private-)?user-images\.githubusercontent\.com|github\.com\/user-attachments\/assets)\/[^"']+["']/i.test(attrString);
+            if (!hasGitHubSrc) return match;
+
+            // Update width attribute
+            let updatedAttrs;
+            if (/width=["'][^"']*["']/.test(attrString)) {
+                updatedAttrs = attrString.replace(/width=["'][^"']*["']/, `width="${width}"`);
+            } else {
+                updatedAttrs = attrString.trim() + ` width="${width}"`;
+            }
+
+            // Remove any trailing self-closing slash from attrs
+            updatedAttrs = updatedAttrs.replace(/\s*\/$/, '');
+
+            // Determine if the original was self-closing
+            const isSelfClosing = match.endsWith('/>');
+
+            const closing = isSelfClosing ? ' />' : '>';
+            modified = true;
+            return `<img ${updatedAttrs}${closing}`;
+        });
+
+        if (modified) {
+            textarea.value = content;
+        }
+    }
+
     function replaceImagesInTextarea(textarea) {
         let content = textarea.value;
         let modified = false;
@@ -52,6 +89,8 @@
         if (modified) {
             textarea.value = content;
         }
+
+        adjustExistingImgTags(textarea);
     }
 
     function monitorTextarea(textarea) {
@@ -78,7 +117,7 @@
                 replaceImagesInTextarea(textarea);
             }
         }, 1000); // Increased from 800ms to 1000ms for less interference
-}
+    }
 
 
     function observeDynamicTextareas() {
