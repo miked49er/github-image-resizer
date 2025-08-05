@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GitHub Image Resizer
 // @namespace    http://miked49er.github.io/
-// @version      1.7
+// @version      1.8
 // @description  Convert GitHub markdown image uploads to HTML <img> tags with customizable width; supports drag-drop, paste, and attachment button uploads.
 // @author       Mike Deiters
 // @match        https://github.com/*
@@ -44,28 +44,22 @@
         const width = getWidth();
 
         // Match GitHub-hosted <img> tags (self-closing or not)
-        const htmlImgRegex = /<img\s+([^>]*?)>/gi;
+        const htmlImgRegex = /<img\s+([^>]*?)\s*(\/?)>/gi;
 
-        content = content.replace(htmlImgRegex, (match, attrString) => {
-            // Only process GitHub-hosted images
+        content = content.replace(htmlImgRegex, (match, attrString, selfClosingSlash) => {
             const hasGitHubSrc = /src=["']https:\/\/(?:(private-)?user-images\.githubusercontent\.com|github\.com\/user-attachments\/assets)\/[^"']+["']/i.test(attrString);
             if (!hasGitHubSrc) return match;
 
-            // Update width attribute
-            let updatedAttrs;
-            if (/width=["'][^"']*["']/.test(attrString)) {
-                updatedAttrs = attrString.replace(/width=["'][^"']*["']/, `width="${width}"`);
-            } else {
-                updatedAttrs = attrString.trim() + ` width="${width}"`;
-            }
+            // Remove existing width and height
+            let updatedAttrs = attrString
+                .replace(/width=["'][^"']*["']/i, '')
+                .replace(/height=["'][^"']*["']/i, '')
+                .replace(/\s*\/$/, '') // remove any trailing /
+                .trim();
 
-            // Remove any trailing self-closing slash from attrs
-            updatedAttrs = updatedAttrs.replace(/\s*\/$/, '');
+            updatedAttrs += ` width="${width}"`;
 
-            // Determine if the original was self-closing
-            const isSelfClosing = match.endsWith('/>');
-
-            const closing = isSelfClosing ? ' />' : '>';
+            const closing = selfClosingSlash === '/' ? ' />' : '>';
             modified = true;
             return `<img ${updatedAttrs}${closing}`;
         });
@@ -74,6 +68,7 @@
             textarea.value = content;
         }
     }
+
 
     function replaceImagesInTextarea(textarea) {
         let content = textarea.value;
@@ -112,7 +107,7 @@
         let lastValue = textarea.value;
         setInterval(() => {
             const currentValue = textarea.value;
-            if (currentValue !== lastValue && imageMarkdownRegex.test(currentValue)) {
+            if (currentValue !== lastValue) {
                 lastValue = currentValue;
                 replaceImagesInTextarea(textarea);
             }
